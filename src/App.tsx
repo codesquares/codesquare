@@ -40,7 +40,7 @@ function App() {
     try {
       // console.log(import.meta.env.VITE_API_URL);
       const response = await fetch(
-        `https://codesquare.io/api/send-email`, {
+        `https://codesquare-two.vercel.app/api/send-email`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
