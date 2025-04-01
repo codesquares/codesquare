@@ -25,7 +25,7 @@ export default async function handler(req, res) {
   console.log("📩 Incoming request:", req.method, req.headers, req.body);
 
   // ✅ Handle CORS Preflight Request
-  const allowedOrigins = ["https://www.codesquare.io", "https://codesquare.io, https://codesquare-two.vercel.app"];
+  const allowedOrigins = ["https://www.codesquare.io", "https://codesquare.io, https://codesquare-bkend.vercel.app"];
   const origin = req.headers.origin;
   if (allowedOrigins.includes(origin)) {
     res.setHeader("Access-Control-Allow-Origin", origin);
