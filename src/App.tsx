@@ -5,6 +5,7 @@ import { useParallax } from 'react-scroll-parallax';
 import foxtel from "../assets/Foxtel gif.png";
 import michel from "../assets/Micheal gif.png";
 import obamzy from "../assets/Obamzy gif.png";
+// import logo from "../assets/T5exWE01.svg";
 
 function App() {
   const [formData, setFormData] = useState({ name: '', email: "", message: "" });
@@ -37,7 +38,8 @@ function App() {
     setStatus('Sending...');
 
     try {
-      const response = await fetch(`${process.env.REACT_APP_API_URL}/send-email`, {
+      console.log(import.meta.env.VITE_API_URL);
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/send-email`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -105,7 +107,8 @@ function App() {
             >
               <Code2 className="h-8 w-8 text-secondary" />
               <span className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-secondary to-cyan-400">
-                CODESQUARE
+                {/* <img src={logo} alt="Logo" className="h-8 w-8 inline-block mr-2" /> */}
+                CodeSquare
               </span>
             </motion.div>
             <motion.div 
