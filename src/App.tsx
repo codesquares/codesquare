@@ -483,7 +483,7 @@ function App() {
                 </div>
                 <div>
                   <h3 className="text-lg font-semibold mb-1">Visit Us</h3>
-                  <p className="text-gray-300">123 Tech Street, Digital City, 12345</p>
+                  <p className="text-gray-300">123 Tech Street, Digital City, Global_Village</p>
                 </div>
               </motion.div>
             </div>
