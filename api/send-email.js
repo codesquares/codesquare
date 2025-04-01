@@ -11,7 +11,7 @@ if (!EMAIL_SERVICE || !EMAIL_USER || !EMAIL_PASS || !TO_EMAIL) {
   console.error("❌ Missing required environment variables for email configuration");
 }
 
-// Create Nodemailer transporter (avoid re-creating on each request)
+// Create Nodemailer transporter
 const transporter = createTransport({
   service: EMAIL_SERVICE,
   auth: {
@@ -20,19 +20,32 @@ const transporter = createTransport({
   },
 });
 
-// API function
 export default async function handler(req, res) {
+  // ✅ Debugging - Log Incoming Requests
+  console.log("📩 Incoming request:", req.method, req.headers, req.body);
+
   // ✅ Handle CORS Preflight Request
-  res.setHeader('Access-Control-Allow-Origin', 'https://www.codesquare.io'); // Allow frontend domain
-  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  const allowedOrigins = ["https://www.codesquare.io", "https://codesquare.io"];
+  const origin = req.headers.origin;
+  if (allowedOrigins.includes(origin)) {
+    res.setHeader("Access-Control-Allow-Origin", origin);
+  }
+
+  res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
 
   if (req.method === "OPTIONS") {
-    return res.status(200).end(); // Allow CORS preflight requests
+    res.setHeader("Content-Type", "application/json");
+    return res.status(200).end(); // Allow CORS preflight
   }
 
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Method Not Allowed" });
+  }
+
+  // ✅ Ensure JSON Parsing
+  if (!req.body || Object.keys(req.body).length === 0) {
+    return res.status(400).json({ error: "Request body is missing" });
   }
 
   const { name, email, message } = req.body;
@@ -41,7 +54,6 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: "Name, email, and message are required" });
   }
 
-  // Email options
   const mailOptions = {
     from: `"CODESQUARE Contact Form" <${EMAIL_USER}>`,
     replyTo: email,
@@ -66,6 +78,7 @@ export default async function handler(req, res) {
 
   try {
     await transporter.sendMail(mailOptions);
+    console.log("✅ Email sent successfully!");
     return res.status(200).json({ message: "Email sent successfully" });
   } catch (error) {
     console.error("❌ Error sending email:", error);
