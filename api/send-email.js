@@ -7,12 +7,11 @@ dotenv.config();
 // Load environment variables
 const { EMAIL_SERVICE, EMAIL_USER, EMAIL_PASS, TO_EMAIL } = process.env;
 
-// Validate required environment variables
 if (!EMAIL_SERVICE || !EMAIL_USER || !EMAIL_PASS || !TO_EMAIL) {
   console.error("❌ Missing required environment variables for email configuration");
 }
 
-// Create Nodemailer transporter (Only runs once)
+// Create Nodemailer transporter (avoid re-creating on each request)
 const transporter = createTransport({
   service: EMAIL_SERVICE,
   auth: {
@@ -21,25 +20,23 @@ const transporter = createTransport({
   },
 });
 
-// Verify transporter once (not on every request)
-transporter.verify((error) => {
-  if (error) {
-    console.error("❌ Error with email configuration:", error);
-  } else {
-    console.log("✅ Email server is ready to send messages");
-  }
-});
-
 // API function
-export default async function (req, res) {
-  // Only allow POST requests
+export default async function handler(req, res) {
+  // ✅ Handle CORS Preflight Request
+  res.setHeader('Access-Control-Allow-Origin', 'https://www.codesquare.io'); // Allow frontend domain
+  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+
+  if (req.method === "OPTIONS") {
+    return res.status(200).end(); // Allow CORS preflight requests
+  }
+
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Method Not Allowed" });
   }
 
   const { name, email, message } = req.body;
 
-  // Validate input
   if (!name || !email || !message) {
     return res.status(400).json({ error: "Name, email, and message are required" });
   }
@@ -50,14 +47,7 @@ export default async function (req, res) {
     replyTo: email,
     to: TO_EMAIL,
     subject: `[ACTION REQUIRED] New contact from ${name}`,
-    text: `
-      New message from ${name} (${email}):
-      ============================
-      ${message}
-      
-      Reply to: ${email}
-      Received: ${new Date().toUTCString()}
-    `,
+    text: `New message from ${name} (${email}):\n\n${message}\n\nReply to: ${email}\nReceived: ${new Date().toUTCString()}`,
     html: `
       <div style="font-family: Arial, sans-serif; padding: 20px; border: 1px solid #E5E7EB;">
         <h2 style="color: #4F46E5;">New Contact Form Submission</h2>
@@ -74,7 +64,6 @@ export default async function (req, res) {
     `,
   };
 
-  // Send email
   try {
     await transporter.sendMail(mailOptions);
     return res.status(200).json({ message: "Email sent successfully" });
@@ -83,4 +72,3 @@ export default async function (req, res) {
     return res.status(500).json({ error: "Failed to send email" });
   }
 }
-// This API route handles sending emails from a contact form.
