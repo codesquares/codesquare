@@ -39,7 +39,8 @@ function App() {
 
     try {
       // console.log(import.meta.env.VITE_API_URL);
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/send-email`, {
+      const response = await fetch(
+        `https://codesquare.io/api/send-email`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
