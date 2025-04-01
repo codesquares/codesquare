@@ -1,5 +1,8 @@
 import { Code2, Palette, LineChart, ChevronRight, Mail, Phone, MapPin } from 'lucide-react';
 import { useState } from 'react';
+import foxtel from "../assets/Foxtel gif.png";
+import michel from "../assets/Micheal gif.png";
+import obamzy from "../assets/Obamzy gif.png";
 
 function App() {
   const [formData, setFormData] = useState({ name: '', email: "", message: "" });
@@ -106,7 +109,7 @@ function App() {
           <div className="grid md:grid-cols-3 gap-8">
             <div className="text-center">
               <img
-                src="../assets/Obamzy gif.png"
+                src={obamzy}
                 alt="Team member"
                 className="w-48 h-48 rounded-full mx-auto mb-4 object-cover"
               />
@@ -115,7 +118,7 @@ function App() {
             </div>
             <div className="text-center">
               <img
-                src="../assets/Foxtel gif.png"
+                src={foxtel}
                 alt="Team member"
                 className="w-48 h-48 rounded-full mx-auto mb-4 object-cover"
               />
@@ -124,7 +127,7 @@ function App() {
             </div>
             <div className="text-center">
               <img
-                src="../assets/Micheal gif.png"
+                src={michel}
                 alt="Team member"
                 className="w-48 h-48 rounded-full mx-auto mb-4 object-cover"
               />
